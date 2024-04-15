@@ -18,7 +18,7 @@ total_params = sum(p.numel() for p in model.parameters())
 
 
 ### Report 4
-Utilize weight decay and batch normalization method
+Utilize weight decay and batch normalization method  
 [1] Weight Decay = 0.001 (optimizer)
 ~~~
 optimizer_3 = torch.optim.SGD(model_3.parameters(), lr=0.01,momentum=0.9,weight_decay=0.001)
