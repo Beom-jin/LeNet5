@@ -1,7 +1,7 @@
 
 import dataset
 from dataset import MNIST
-from model import LeNet5, CustomMLP
+from model import LeNet5, CustomMLP , DLeNet5
 import torch
 from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
@@ -42,11 +42,10 @@ def train(model, trn_loader, device, criterion, optimizer,tst_loader,max_epoch,b
             optimizer.step()
         acc = 100 * float(total_correct) / torch.tensor(60000)
         avg_loss = avg_loss / len(trn_loader)
-        print('Epoch: [{0}]\t'
+        print('Epoch: {0}\t'
         'Train Accuracy {acc:.4f}\t'
         'Train Loss {loss:.4f} \t'.format(
         e, acc=acc,loss=avg_loss, ))
-
 
         t_loss,acc = test(model,tst_loader,device,criterion,e,batch_size)
     # write your codes here
@@ -82,7 +81,7 @@ def test(model, tst_loader, device, criterion,epoch=None,batch_size=None):
     acc = 100 * float(total_correct) / torch.tensor(10000)
 
     if(epoch is not None):
-        print('Epoch: [{0}]\t'
+        print('Epoch: {0}\t'
         'Test Accuracy {acc:.4f}\t'
         'Test Loss {loss:.4f} \t'.format(
         epoch, acc=acc,loss=avg_loss, ))
@@ -151,7 +150,6 @@ def main():
     print("LeNet train done")
 
 
-
     model_2 = CustomMLP()
     model_2.cuda()
     model_2.train()
@@ -161,11 +159,26 @@ def main():
     #check params
     total_params = sum(p.numel() for p in model_2.parameters())
 
-    print(f"LeNet5 model parameter num : {total_params}")
-    print("Custom train start")
+    print(f"Custom MLP model parameter num : {total_params}")
+    print("Custom MLP train start")
     train(model_2,train_loader,device,criterion_2,optimizer_2,test_loader,epoch,batch_size)
     acc ,loss = test(model_2,test_loader,device,criterion_2,batch_size=batch_size)
-    print("Custom train done")
+    print("Custom MLP train done")
+
+    model_3 = DLeNet5()
+    model_3.cuda()
+    model_3.train()
+    criterion_3 = nn.CrossEntropyLoss()
+    optimizer_3 = torch.optim.SGD(model_3.parameters(), lr=0.01,momentum=0.9,weight_decay=0.001)
+   
+    #check params
+    total_params = sum(p.numel() for p in model_3.parameters())
+
+    print(f"Developed  LeNet5 model parameter num : {total_params}")
+    print("Developed  LeNet5 train start")
+    train(model_3,train_loader,device,criterion_3,optimizer_3,test_loader,epoch,batch_size)
+    acc ,loss = test(model_3,test_loader,device,criterion_3,batch_size=batch_size)
+    print("Developed  LeNet5 train done")
 
 if __name__ == '__main__':
     main()
